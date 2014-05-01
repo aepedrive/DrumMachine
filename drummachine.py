@@ -2,6 +2,8 @@
 
 from Tkinter import *
 
+#constants
+MAX_DRUM_NUM = 5
 
 class DrumMachine():
 
@@ -25,10 +27,22 @@ class DrumMachine():
                                   textvariable=self.bpu)
         self.bpu_widget.grid(row=0, column=7)
 
+    def create_left_pad(self):
+        left_frame = Frame(self.root)
+        left_frame.grid(row=10, column=0, columnspan=6, sticky=W+E+N+S)
+        tbicon = PhotoImage(file='images/openfile.gif')
+        for i in range(0, MAX_DRUM_NUM):
+            button = Button(left_frame, image=tbicon)
+            button.image = tbicon
+            button.grid(row=i, column=0, padx=5, pady=2)
+            self.drum_entry = Entry(left_frame)
+            self.drum_entry.grid(row=i, column=4, padx=7, pady=2)
+
     def app(self):
         self.root = Tk()
         self.root.title("Drum Beast")
         self.create_top_bar()
+        self.create_left_pad()
         self.root.mainloop()
 
 # ================================================
