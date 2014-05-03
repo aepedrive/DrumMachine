@@ -1,11 +1,37 @@
 #!/usr/bin/env python
 
 from Tkinter import *
+import tkFileDialog
+import tkMessageBox
 
 #constants
 MAX_DRUM_NUM = 5
 
 class DrumMachine():
+
+    def __init__(self):
+        self.widget_drum_name = []
+        self.widget_drum_file_name = [0]*MAX_DRUM_NUM
+        self.current_drum_no = 0
+
+    def drum_load(self, drum_no):
+        def callback():
+            self.current_drum_no = drum_no
+            try:
+                file_name = tkFileDialog.askopenfilename(
+                    defaultextension=".wav",
+                    filetypes=[("Wave Files", ".wav"), ("OGG Files", "*.ogg")])
+                if not file_name: return
+                try:
+                    del self.widget_drum_file_name[drum_no]
+                except: pass
+                self.widget_drum_file_name.insert(drum_no, file_name)
+                drum_name = os.path.basename(file_name)
+                self.widget_drum_name[drum_no].delete(0, END)
+                self.widget_drum_name[drum_no].insert(0, drum_name)
+            except:
+                tkMessageBox.showerror('Invalid', 'Error loading drum samples')
+        return callback
 
     def create_top_bar(self):
         """Creates top buttons"""
@@ -32,7 +58,7 @@ class DrumMachine():
         left_frame.grid(row=10, column=0, columnspan=6, sticky=W+E+N+S)
         tbicon = PhotoImage(file='images/openfile.gif')
         for i in range(0, MAX_DRUM_NUM):
-            button = Button(left_frame, image=tbicon)
+            button = Button(left_frame, image=tbicon, command=self.drum_load(i))
             button.image = tbicon
             button.grid(row=i, column=0, padx=5, pady=2)
             self.drum_entry = Entry(left_frame)
